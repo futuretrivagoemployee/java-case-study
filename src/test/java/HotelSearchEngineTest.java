@@ -1,4 +1,6 @@
+import com.trivago.mp.casestudy.Advertiser;
 import com.trivago.mp.casestudy.DateRange;
+import com.trivago.mp.casestudy.Hotel;
 import com.trivago.mp.casestudy.HotelSearchEngine;
 import com.trivago.mp.casestudy.HotelSearchEngineImpl;
 import com.trivago.mp.casestudy.HotelWithOffers;
@@ -7,6 +9,7 @@ import com.trivago.mp.casestudy.OfferProvider;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,6 +21,9 @@ import java.util.Set;
 import static junit.framework.TestCase.assertTrue;
 import static junit.framework.TestCase.fail;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+
+import static org.hamcrest.CoreMatchers.hasItem;
 
 public class HotelSearchEngineTest {
     final Random random = new Random(42);
@@ -164,5 +170,32 @@ public class HotelSearchEngineTest {
                 hotelWithOffers.getHotel().getId()
             ), hotelsInMunich.contains(hotelWithOffers.getHotel().getId()));
         }
+    }
+    
+    @Test
+    public void testSpecificResultReturned() {
+    	
+    	OfferProvider testOfferProvider = (advertiser, hotelIds, dateRange) -> {
+            Map<Integer, Offer> result = new HashMap<>();
+            
+            if (advertiser.getId() == 90) {
+            	result.put(501, new Offer(new Advertiser(90, "vacation_go.de"), 1000, 10));
+            }
+            
+            return result;
+        };
+        
+        HotelSearchEngine hotelSearchEngine = new HotelSearchEngineImpl();
+
+        hotelSearchEngine.initialize();
+        List<HotelWithOffers> hotelsWithOffers = hotelSearchEngine.performSearch("Lissabon",
+                                                                                 new DateRange(20180214, 201802016),
+                                                                                 testOfferProvider);
+        
+        HotelWithOffers expectedResult = new HotelWithOffers(new Hotel(501, "hotel_prince_lodge_Lissabon", 8, 39, 3));
+        List<Offer> expectedOffers = new ArrayList<Offer>();
+        expectedOffers.add(new Offer(new Advertiser(90, "vacation_go.de"), 1000, 10));
+        expectedResult.setOffers(expectedOffers);
+        assertThat(hotelsWithOffers, hasItem(expectedResult));
     }
 }

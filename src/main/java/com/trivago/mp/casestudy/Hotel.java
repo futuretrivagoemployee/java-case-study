@@ -6,12 +6,14 @@ package com.trivago.mp.casestudy;
 public class Hotel {
     private final int id;
     private final String name;
+    private final Integer cityId;
     private final int rating;
     private final int stars;
 
-    public Hotel(int id, String name, int rating, int stars) {
+    public Hotel(int id, String name, Integer cityId, int rating, int stars) {
         this.id = id;
         this.name = name;
+        this.cityId = cityId;
         this.rating = rating;
         this.stars = stars;
     }
@@ -32,6 +34,15 @@ public class Hotel {
      */
     public String getName() {
         return name;
+    }
+    
+    /**
+     * The id of the city
+     *
+     * @return
+     */
+    public Integer getCityId() {
+        return cityId;
     }
 
     /**
@@ -56,4 +67,26 @@ public class Hotel {
     public String toString() {
         return "Hotel{" + "id=" + id + ", name='" + name + '\'' + ", rating=" + rating + ", stars=" + stars + '}';
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Hotel other = (Hotel) obj;
+		if (id != other.id)
+			return false;
+		return true;
+	}
 }

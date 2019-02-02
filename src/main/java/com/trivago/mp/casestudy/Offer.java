@@ -33,4 +33,35 @@ public class Offer {
     public String toString() {
         return "Offer{" + "advertiser=" + advertiser + ", priceInEuro=" + priceInEuro + ", cpc=" + cpc + '}';
     }
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((advertiser == null) ? 0 : advertiser.hashCode());
+		result = prime * result + cpc;
+		result = prime * result + priceInEuro;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Offer other = (Offer) obj;
+		if (advertiser == null) {
+			if (other.advertiser != null)
+				return false;
+		} else if (!advertiser.equals(other.advertiser))
+			return false;
+		if (cpc != other.cpc)
+			return false;
+		if (priceInEuro != other.priceInEuro)
+			return false;
+		return true;
+	}
 }
